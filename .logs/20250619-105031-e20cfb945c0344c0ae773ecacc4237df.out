@@ -1,0 +1,151 @@
+sending incremental file list
+components.json
+middleware.ts
+next-env.d.ts
+next.config.js
+package.json
+postcss.config.js
+tailwind.config.ts
+tsconfig.json
+app/
+app/globals.css
+app/layout.tsx
+app/page.tsx
+app/api/
+app/api/auth/
+app/api/auth/login/
+app/api/auth/login/route.ts
+app/api/auth/register/
+app/api/auth/register/route.ts
+app/api/chat/
+app/api/chat/route.ts
+app/api/seed/
+app/api/seed/route.ts
+app/chat/
+app/chat/page.tsx
+app/dashboard/
+app/dashboard/page.tsx
+app/dashboard/admin/
+app/dashboard/admin/page.tsx
+app/login/
+app/login/page.tsx
+app/register/
+app/register/page.tsx
+components/
+components/theme-provider.tsx
+components/admin/
+components/admin/admin-dashboard.tsx
+components/chat/
+components/chat/chat-interface.tsx
+components/dashboard/
+components/dashboard/dashboard-layout.tsx
+components/dashboard/dashboard-overview.tsx
+components/ui/
+components/ui/accordion.tsx
+components/ui/alert-dialog.tsx
+components/ui/alert.tsx
+components/ui/aspect-ratio.tsx
+components/ui/avatar.tsx
+components/ui/badge.tsx
+components/ui/breadcrumb.tsx
+components/ui/button.tsx
+components/ui/calendar.tsx
+components/ui/card.tsx
+components/ui/carousel.tsx
+components/ui/checkbox.tsx
+components/ui/collapsible.tsx
+components/ui/command.tsx
+components/ui/context-menu.tsx
+components/ui/date-range-picker.tsx
+components/ui/dialog.tsx
+components/ui/drawer.tsx
+components/ui/dropdown-menu.tsx
+components/ui/form.tsx
+components/ui/hover-card.tsx
+components/ui/input-otp.tsx
+components/ui/input.tsx
+components/ui/label.tsx
+components/ui/menubar.tsx
+components/ui/navigation-menu.tsx
+components/ui/pagination.tsx
+components/ui/popover.tsx
+components/ui/progress.tsx
+components/ui/radio-group.tsx
+components/ui/resizable.tsx
+components/ui/scroll-area.tsx
+components/ui/select.tsx
+components/ui/separator.tsx
+components/ui/sheet.tsx
+components/ui/skeleton.tsx
+components/ui/slider.tsx
+components/ui/sonner.tsx
+components/ui/switch.tsx
+components/ui/table.tsx
+components/ui/tabs.tsx
+components/ui/task-card.tsx
+components/ui/textarea.tsx
+components/ui/toast.tsx
+components/ui/toaster.tsx
+components/ui/toggle-group.tsx
+components/ui/toggle.tsx
+components/ui/tooltip.tsx
+components/ui/use-toast.ts
+hooks/
+hooks/use-toast.ts
+lib/
+lib/auth.ts
+lib/db.ts
+lib/roles.ts
+lib/types.ts
+lib/utils.ts
+lib/db/
+prisma/
+prisma/schema.prisma
+
+sent 240,238 bytes  received 1,663 bytes  483,802.00 bytes/sec
+total size is 234,248  speedup is 0.97
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.28
+  - Experiments (use with caution):
+    · outputFileTracingRoot
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/9) ...
+   Generating static pages (2/9) 
+   Generating static pages (4/9) 
+   Generating static pages (6/9) 
+ ✓ Generating static pages (9/9)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ƒ /                                    175 B            96 kB
+├ ○ /_not-found                          873 B            88 kB
+├ ƒ /api/auth/login                      0 B                0 B
+├ ƒ /api/auth/register                   0 B                0 B
+├ ƒ /api/chat                            0 B                0 B
+├ ƒ /api/seed                            0 B                0 B
+├ ƒ /chat                                6.67 kB         144 kB
+├ ƒ /dashboard                           1.85 kB         139 kB
+├ ƒ /dashboard/admin                     2.48 kB         139 kB
+├ ○ /login                               4.02 kB         108 kB
+└ ○ /register                            4.47 kB         109 kB
++ First Load JS shared by all            87.1 kB
+  ├ chunks/117-f2890b43e9ab5d44.js       31.6 kB
+  ├ chunks/fd9d1056-bb01ff989b0918d5.js  53.6 kB
+  └ other shared chunks (total)          1.9 kB
+
+
+ƒ Middleware                             51.7 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,81 @@
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Post-resolution validation
+➤ YN0060: │ @typescript-eslint/parser is listed by your project with version 7.0.0 (p6cb6c), which doesn't satisfy what @typescript-eslint/eslint-plugin requests (^6.0.0-alpha).
+➤ YN0060: │ eslint is listed by your project with version 9.24.0 (pe6e00), which doesn't satisfy what @typescript-eslint/eslint-plugin and other dependencies request (^8.57.0).
+➤ YN0002: │ app@workspace:. doesn't provide prettier (pd88b5), requested by eslint-plugin-prettier.
+➤ YN0086: │ Some peer dependencies are incorrectly met by your project; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code.
+➤ YN0086: │ Some peer dependencies are incorrectly met by dependencies; run yarn explain peer-requirements for details.
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed in 1s 361ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed in 0s 693ms
+➤ YN0000: · Done with warnings in 2s 323ms
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v6.7.0) to ./node_modules/.prisma/client in 226ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+  ▲ Next.js 14.2.28
+  - Local:        http://localhost:3000
+  - Environments: .env
+  - Experiments (use with caution):
+    · outputFileTracingRoot
+
+ ✓ Starting...
+ ✓ Ready in 1350ms
+ ✓ Compiled /middleware in 297ms (92 modules)
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/',
+  timestamp: '2025-06-19T13:59:22.845Z',
+  method: 'GET'
+}
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/',
+  timestamp: '2025-06-19T13:59:23.688Z',
+  method: 'GET'
+}
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/login',
+  timestamp: '2025-06-19T13:59:24.028Z',
+  method: 'GET'
+}
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/login',
+  timestamp: '2025-06-19T13:59:24.157Z',
+  method: 'GET'
+}
+ ○ Compiling /login ...
+ ✓ Compiled /login in 3.4s (1150 modules)
+ GET /login 200 in 3881ms
+ GET /login 200 in 3747ms
+ ✓ Compiled in 528ms (577 modules)
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/',
+  timestamp: '2025-06-19T13:59:29.178Z',
+  method: 'GET'
+}
+[SECURITY] REQUEST {
+  ip: '197.221.191.78',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+  pathname: '/login',
+  timestamp: '2025-06-19T13:59:29.534Z',
+  method: 'GET'
+}
+ GET /login 200 in 45ms

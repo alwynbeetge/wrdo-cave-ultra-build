@@ -1,0 +1,70 @@
+ ⚠ Compiled with warnings
+
+./node_modules/bcryptjs/index.js
+A Node.js module is loaded ('crypto' at line 32) which is not supported in the Edge Runtime.
+Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime
+
+Import trace for requested module:
+./node_modules/bcryptjs/index.js
+./lib/auth.ts
+
+./node_modules/bcryptjs/index.js
+A Node.js API is used (process.nextTick at line: 337) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/bcryptjs/index.js
+./lib/auth.ts
+
+./node_modules/bcryptjs/index.js
+A Node.js API is used (setImmediate at line: 338) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/bcryptjs/index.js
+./lib/auth.ts
+
+./node_modules/bcryptjs/index.js
+A Node.js API is used (setImmediate at line: 339) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/bcryptjs/index.js
+./lib/auth.ts
+
+./node_modules/bcryptjs/index.js
+A Node.js API is used (process.nextTick at line: 340) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/bcryptjs/index.js
+./lib/auth.ts
+
+Error getting current session: n [Error]: Dynamic server usage: Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/opt/hostedapp/node/root/app/.build/server/chunks/276.js:1:37206)
+    at Object.d (/opt/hostedapp/node/root/app/.build/server/chunks/899.js:1:1678)
+    at d (/opt/hostedapp/node/root/app/.build/server/app/page.js:1:36678)
+    at ew (/opt/hostedapp/node/root/app/.build/server/app/page.js:1:33073)
+    at eh (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:134660)
+    at e (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:137545)
+    at ek (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:138019)
+    at Array.toJSON (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135629)
+    at stringify (<anonymous>)
+    at eP (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142093) {
+  description: "Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Error getting current session: n [Error]: Dynamic server usage: Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/opt/hostedapp/node/root/app/.build/server/chunks/276.js:1:37206)
+    at Object.d (/opt/hostedapp/node/root/app/.build/server/chunks/899.js:1:1678)
+    at d (/opt/hostedapp/node/root/app/.build/server/app/page.js:1:36678)
+    at ew (/opt/hostedapp/node/root/app/.build/server/app/page.js:1:33073)
+    at eh (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:134660)
+    at e (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:137545)
+    at ek (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:138019)
+    at Array.toJSON (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135629)
+    at stringify (<anonymous>)
+    at eP (/opt/hostedapp/node/root/app/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142093) {
+  description: "Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}

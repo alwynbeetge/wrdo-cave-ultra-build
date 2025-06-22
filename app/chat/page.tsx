@@ -26,7 +26,8 @@ import {
   Image,
   Bot
 } from 'lucide-react';
-import { useWRDO } from '@/lib/wrdo-context';
+// import { useWRDO } from '@/lib/wrdo-context';
+import { useMockWRDO as useWRDO } from '@/lib/wrdo-mock';
 import { WRDOLayout } from '@/components/layout/wrdo-layout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AI_MODELS, AI_AGENTS, aiRouter, estimateMessageCost, formatCost } from '@/lib/ai-router';

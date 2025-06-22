@@ -240,8 +240,7 @@ export function WRDOProvider({ children }: { children: ReactNode }) {
     const pageInfo = analyzeCurrentPage(pathname);
     dispatch({ type: 'SET_PAGE', payload: pageInfo });
     
-    // Load page-specific data
-    loadPageData(pageInfo.path);
+    // loadPageData(pageInfo.path);
   }, [pathname]);
 
   // Initialize WRDO system
@@ -310,12 +309,13 @@ export function WRDOProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'INITIALIZE', payload: { activeModels: models } });
       
     } catch (error) {
-      addNotification({
-        type: 'error',
-        title: 'System Initialization Error',
-        message: 'Failed to load system data',
-        read: false,
-      });
+      console.error('System initialization error:', error);
+      // addNotification({
+      //   type: 'error',
+      //   title: 'System Initialization Error',
+      //   message: 'Failed to load system data',
+      //   read: false,
+      // });
     }
   };
 

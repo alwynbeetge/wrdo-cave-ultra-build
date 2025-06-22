@@ -21,7 +21,8 @@ import {
   TrendingUp,
   BarChart3
 } from 'lucide-react';
-import { useWRDO } from '@/lib/wrdo-context';
+// import { useWRDO } from '@/lib/wrdo-context';
+import { useMockWRDO as useWRDO } from '@/lib/wrdo-mock';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts';
 

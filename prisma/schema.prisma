@@ -1,0 +1,592 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String    @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  sessions              Session[]
+  projects              Project[]
+  tasks                 Task[]
+  notifications         Notification[]
+  chatMessages          ChatMessage[]
+  emailAccounts         EmailAccount[]
+  integrationSettings   IntegrationSettings[]
+  aiConfigurations      AIConfiguration[]
+  deepAgentTasks        DeepAgentTask[]
+  // Phase 1: Admin & Settings
+  roleAssignments       UserRoleAssignment[]
+  apiKeys               APIKeyManagement[]
+  auditLogs             AuditLog[]
+  securityEvents        SecurityEvent[]
+  // Phase 2: AI Intelligence
+  contextualLearning    ContextualLearning[]
+  documents             Document[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("active") // active, completed, paused
+  priority    String   @default("medium") // low, medium, high
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("todo") // todo, in_progress, completed
+  priority    String   @default("medium") // low, medium, high
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  projectId   String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   @default("info") // info, warning, error, success
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  message   String
+  response  String?
+  metadata  Json?    // AI response metadata (model, tokens, cost, etc.)
+  timestamp DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailAccount {
+  id          String   @id @default(cuid())
+  email       String
+  provider    String   @default("gmail") // gmail, outlook, etc
+  isActive    Boolean  @default(true)
+  lastChecked DateTime?
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailSummary EmailSummary[]
+  @@unique([userId, email])
+}
+
+model EmailSummary {
+  id             String   @id @default(cuid())
+  subject        String
+  sender         String
+  preview        String?
+  priority       String   @default("normal") // low, normal, high, urgent
+  isRead         Boolean  @default(false)
+  receivedAt     DateTime
+  createdAt      DateTime @default(now())
+  emailAccountId String
+  emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+}
+
+model IntegrationSettings {
+  id           String   @id @default(cuid())
+  platform     String   // 'google_analytics', 'mailchimp', 'facebook', 'tiktok', 'linkedin', 'instagram', 'youtube'
+  apiKey       String?
+  accessToken  String?
+  refreshToken String?
+  settings     Json?    // Platform-specific settings
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, platform])
+  @@map("integration_settings")
+}
+
+model AnalyticsData {
+  id        String   @id @default(cuid())
+  platform  String   // 'google_analytics', 'facebook', 'tiktok', etc.
+  metric    String   // 'page_views', 'sessions', 'followers', etc.
+  value     Float
+  date      DateTime
+  metadata  Json?    // Additional platform-specific data
+  createdAt DateTime @default(now())
+  @@map("analytics_data")
+}
+
+model SocialMediaPost {
+  id          String   @id @default(cuid())
+  platform    String   // 'facebook', 'tiktok', 'linkedin', 'instagram', 'youtube'
+  postId      String   // Platform-specific post ID
+  content     String?
+  mediaUrl    String?
+  likes       Int      @default(0)
+  shares      Int      @default(0)
+  comments    Int      @default(0)
+  views       Int      @default(0)
+  engagement  Float    @default(0)
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([platform, postId])
+  @@map("social_media_posts")
+}
+
+model AIConfiguration {
+  id           String   @id @default(cuid())
+  provider     String   // 'openai', 'gemini', 'deepseek'
+  model        String   // 'gpt-4', 'gemini-pro', 'deepseek-chat'
+  apiKey       String?
+  settings     Json?    // Model-specific settings
+  isActive     Boolean  @default(true)
+  isPrimary    Boolean  @default(false)
+  costPerToken Float?   // Cost tracking
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, provider, model])
+  @@map("ai_configurations")
+}
+
+model DeepAgentTask {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  taskType      String   // 'research', 'analysis', 'content_creation', etc.
+  briefing      Json     // Detailed task briefing
+  status        String   @default("pending") // 'pending', 'approved', 'in_progress', 'completed', 'rejected'
+  estimatedCost Float?
+  actualCost    Float?
+  result        Json?    // Task results
+  approvedAt    DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("deep_agent_tasks")
+}
+
+model MailchimpData {
+  id              String   @id @default(cuid())
+  listId          String?
+  campaignId      String?
+  subscribers     Int      @default(0)
+  openRate        Float    @default(0)
+  clickRate       Float    @default(0)
+  bounceRate      Float    @default(0)
+  unsubscribeRate Float    @default(0)
+  date            DateTime
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  @@map("mailchimp_data")
+}
+
+// PHASE 1: ADMIN & SETTINGS FOUNDATION
+model UserRole {
+  id          String   @id @default(cuid())
+  name        String   @unique // 'admin', 'manager', 'user', 'viewer'
+  description String?
+  permissions Json     // Array of permission strings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userRoleAssignments UserRoleAssignment[]
+  @@map("user_roles")
+}
+
+model UserRoleAssignment {
+  id         String   @id @default(cuid())
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+  assignedBy String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       UserRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  @@unique([userId, roleId])
+  @@map("user_role_assignments")
+}
+
+model APIKeyManagement {
+  id           String   @id @default(cuid())
+  service      String   // 'openai', 'google_analytics', 'mailchimp', etc.
+  keyName      String
+  encryptedKey String   // Encrypted API key
+  isActive     Boolean  @default(true)
+  lastUsed     DateTime?
+  usageCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, service, keyName])
+  @@map("api_key_management")
+}
+
+model SystemSettings {
+  id          String   @id @default(cuid())
+  category    String   // 'security', 'ai', 'integrations', 'notifications'
+  key         String
+  value       Json
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([category, key])
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String   // 'create', 'update', 'delete', 'login', 'api_call'
+  resource    String   // 'user', 'project', 'api_key', etc.
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
+  createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@map("audit_logs")
+}
+
+model SecurityEvent {
+  id          String   @id @default(cuid())
+  type        String   // 'suspicious_activity', 'rate_limit_exceeded', 'failed_auth', 'blocked_ip', 'admin_action'
+  severity    String   // 'low', 'medium', 'high', 'critical'
+  ipAddress   String
+  userAgent   String
+  userId      String?
+  description String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@map("security_events")
+}
+
+// PHASE 2: ADVANCED AI INTELLIGENCE CORE
+model PatternRecognition {
+  id            String   @id @default(cuid())
+  patternType   String   // 'user_behavior', 'market_trend', 'performance_anomaly'
+  dataSource    String   // 'analytics', 'social_media', 'email', 'tasks'
+  pattern       Json     // Pattern definition and parameters
+  confidence    Float    // 0.0 to 1.0
+  frequency     String   // 'daily', 'weekly', 'monthly'
+  isActive      Boolean  @default(true)
+  lastDetected  DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  anomalies     PatternAnomaly[]
+  @@map("pattern_recognition")
+}
+
+model PatternAnomaly {
+  id           String   @id @default(cuid())
+  patternId    String
+  severity     String   // 'low', 'medium', 'high', 'critical'
+  description  String
+  detectedData Json
+  isResolved   Boolean  @default(false)
+  resolvedAt   DateTime?
+  resolvedBy   String?
+  actionTaken  String?
+  detectedAt   DateTime @default(now())
+  pattern      PatternRecognition @relation(fields: [patternId], references: [id], onDelete: Cascade)
+  @@map("pattern_anomalies")
+}
+
+model ContextualLearning {
+  id            String   @id @default(cuid())
+  userId        String
+  context       String   // 'task_preferences', 'communication_style', 'work_patterns'
+  learningData  Json     // Learned preferences and patterns
+  confidence    Float    @default(0.5)
+  lastUpdated   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, context])
+  @@map("contextual_learning")
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // 'pdf', 'document', 'spreadsheet', 'image', 'video'
+  size        String   // File size as string (e.g., "2.4 MB")
+  category    String   // 'business', 'research', 'design', 'meetings', 'media'
+  fileUrl     String?  // URL to the actual file
+  mimeType    String?  // MIME type of the file
+  uploadedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("documents")
+}
+
+model KnowledgeGraph {
+  id          String   @id @default(cuid())
+  entityType  String   // 'person', 'company', 'concept', 'document'
+  entityId    String   // Reference to actual entity
+  properties  Json     // Entity properties and metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  relationships KnowledgeGraphRelation[] @relation("FromEntity")
+  relatedTo     KnowledgeGraphRelation[] @relation("ToEntity")
+  @@unique([entityType, entityId])
+  @@map("knowledge_graph")
+}
+
+model KnowledgeGraphRelation {
+  id           String   @id @default(cuid())
+  fromEntityId String
+  toEntityId   String
+  relationType String   // 'works_with', 'competes_with', 'related_to', 'depends_on'
+  strength     Float    @default(1.0) // Relationship strength 0.0 to 1.0
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  fromEntity   KnowledgeGraph @relation("FromEntity", fields: [fromEntityId], references: [id], onDelete: Cascade)
+  toEntity     KnowledgeGraph @relation("ToEntity", fields: [toEntityId], references: [id], onDelete: Cascade)
+  @@unique([fromEntityId, toEntityId, relationType])
+  @@map("knowledge_graph_relations")
+}
+
+// PHASE 3: AUTONOMOUS OPERATIONS
+model AutonomousAgent {
+  id            String   @id @default(cuid())
+  name          String
+  agentType     String   // 'goal_oriented', 'monitoring', 'analysis', 'execution'
+  description   String?
+  goals         Json     // Agent goals and objectives
+  capabilities  Json     // What the agent can do
+  constraints   Json     // Operating constraints and limits
+  isActive      Boolean  @default(true)
+  lastExecution DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tasks         AgentTask[]
+  @@map("autonomous_agents")
+}
+
+model AgentTask {
+  id            String   @id @default(cuid())
+  agentId       String
+  taskType      String   // 'analysis', 'monitoring', 'execution', 'reporting'
+  priority      String   @default("medium") // 'low', 'medium', 'high', 'urgent'
+  status        String   @default("pending") // 'pending', 'running', 'completed', 'failed', 'cancelled'
+  input         Json     // Task input parameters
+  output        Json?    // Task results
+  startedAt     DateTime?
+  completedAt   DateTime?
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+  agent         AutonomousAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  @@map("agent_tasks")
+}
+
+model PredictiveModel {
+  id            String   @id @default(cuid())
+  modelType     String   // 'market_forecast', 'user_behavior', 'performance_prediction'
+  name          String
+  description   String?
+  algorithm     String   // 'linear_regression', 'neural_network', 'time_series'
+  parameters    Json     // Model parameters and configuration
+  trainingData  Json?    // Training dataset reference
+  accuracy      Float?   // Model accuracy score
+  lastTrained   DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  predictions   ModelPrediction[]
+  @@map("predictive_models")
+}
+
+model ModelPrediction {
+  id            String   @id @default(cuid())
+  modelId       String
+  predictionType String // 'forecast', 'classification', 'anomaly'
+  input         Json     // Input data used for prediction
+  output        Json     // Prediction results
+  confidence    Float    // Prediction confidence 0.0 to 1.0
+  actualValue   Json?    // Actual outcome (for accuracy tracking)
+  isAccurate    Boolean? // Whether prediction was accurate
+  createdAt     DateTime @default(now())
+  model         PredictiveModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  @@map("model_predictions")
+}
+
+// PHASE 4: SPECIALIZED MONITORING SYSTEMS
+model CompetitorIntelligence {
+  id             String   @id @default(cuid())
+  competitorName String
+  location       String   // 'paarl', 'cape_town', 'val_de_vie', 'western_cape'
+  industry       String
+  website        String?
+  socialMedia    Json?    // Social media handles
+  keyMetrics     Json     // Tracked metrics and data
+  lastUpdated    DateTime @default(now())
+  createdAt      DateTime @default(now())
+  insights       CompetitorInsight[]
+  @@unique([competitorName, location])
+  @@map("competitor_intelligence")
+}
+
+model CompetitorInsight {
+  id            String   @id @default(cuid())
+  competitorId  String
+  insightType   String   // 'pricing', 'product_launch', 'marketing_campaign', 'hiring'
+  title         String
+  description   String
+  impact        String   // 'low', 'medium', 'high', 'critical'
+  source        String   // 'website', 'social_media', 'news', 'manual'
+  confidence    Float    @default(0.8)
+  actionRequired Boolean @default(false)
+  detectedAt    DateTime @default(now())
+  competitor    CompetitorIntelligence @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  @@map("competitor_insights")
+}
+
+model ComplianceRule {
+  id            String   @id @default(cuid())
+  ruleType      String   // 'popi', 'gdpr', 'tax_law', 'api_terms'
+  title         String
+  description   String
+  requirements  Json     // Specific compliance requirements
+  severity      String   // 'low', 'medium', 'high', 'critical'
+  jurisdiction  String   // 'south_africa', 'eu', 'global'
+  isActive      Boolean  @default(true)
+  lastUpdated   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  violations    ComplianceViolation[]
+  @@map("compliance_rules")
+}
+
+model ComplianceViolation {
+  id            String   @id @default(cuid())
+  ruleId        String
+  violationType String   // 'data_breach', 'unauthorized_access', 'policy_violation'
+  description   String
+  severity      String   // 'low', 'medium', 'high', 'critical'
+  status        String   @default("open") // 'open', 'investigating', 'resolved', 'false_positive'
+  detectedAt    DateTime @default(now())
+  resolvedAt    DateTime?
+  resolution    String?
+  rule          ComplianceRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  @@map("compliance_violations")
+}
+
+model SecurityThreat {
+  id             String   @id @default(cuid())
+  threatType     String   // 'unauthorized_access', 'data_breach', 'malware', 'phishing'
+  severity       String   // 'low', 'medium', 'high', 'critical'
+  description    String
+  source         String?  // IP address or source identifier
+  targetResource String?  // Affected resource
+  status         String   @default("active") // 'active', 'mitigated', 'resolved'
+  detectedAt     DateTime @default(now())
+  mitigatedAt    DateTime?
+  resolution     String?
+  @@map("security_threats")
+}
+
+// PHASE 5: IMPACT ASSESSMENT & AUTOMATION
+model ImpactAssessment {
+  id              String   @id @default(cuid())
+  changeType      String   // 'system_update', 'policy_change', 'integration_change'
+  changeId        String   // Reference to the actual change
+  assessmentType  String   // 'pre_change', 'post_change', 'ongoing'
+  impactAreas     Json     // Areas affected by the change
+  riskLevel       String   // 'low', 'medium', 'high', 'critical'
+  mitigation      Json?    // Mitigation strategies
+  recommendations Json?    // Recommended actions
+  status          String   @default("pending") // 'pending', 'approved', 'rejected', 'implemented'
+  assessedAt      DateTime @default(now())
+  assessedBy      String?
+  @@map("impact_assessments")
+}
+
+model ChangeManagement {
+  id              String   @id @default(cuid())
+  changeTitle     String
+  changeType      String   // 'system', 'process', 'policy', 'integration'
+  description     String
+  priority        String   @default("medium") // 'low', 'medium', 'high', 'urgent'
+  status          String   @default("planned") // 'planned', 'approved', 'in_progress', 'completed', 'rolled_back'
+  plannedDate     DateTime?
+  implementedDate DateTime?
+  rollbackPlan    Json?
+  affectedSystems Json     // Systems/areas affected
+  stakeholders    Json     // People/teams involved
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@map("change_management")
+}
+
+model IPProtection {
+  id                String   @id @default(cuid())
+  assetType         String   // 'trademark', 'copyright', 'patent', 'trade_secret'
+  assetName         String
+  description       String?
+  registrationNumber String?
+  status            String   // 'pending', 'registered', 'expired', 'disputed'
+  jurisdiction      String   // 'south_africa', 'international'
+  expiryDate        DateTime?
+  renewalDate       DateTime?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  violations        IPViolation[]
+  @@map("ip_protection")
+}
+
+model IPViolation {
+  id            String   @id @default(cuid())
+  ipAssetId     String
+  violationType String   // 'infringement', 'unauthorized_use', 'counterfeiting'
+  description   String
+  source        String?  // Where violation was detected
+  severity      String   // 'low', 'medium', 'high', 'critical'
+  status        String   @default("detected") // 'detected', 'investigating', 'resolved', 'legal_action'
+  detectedAt    DateTime @default(now())
+  resolvedAt    DateTime?
+  resolution    String?
+  ipAsset       IPProtection @relation(fields: [ipAssetId], references: [id], onDelete: Cascade)
+  @@map("ip_violations")
+}

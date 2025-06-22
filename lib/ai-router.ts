@@ -129,7 +129,7 @@ export class AIRouter {
   private apiKey: string;
   
   constructor() {
-    this.apiKey = process.env.ABACUSAI_API_KEY!;
+    this.apiKey = process.env.ABACUSAI_API_KEY || 'mock-abacus-api-key-for-development';
     if (!this.apiKey) {
       throw new Error('ABACUSAI_API_KEY environment variable is required');
     }

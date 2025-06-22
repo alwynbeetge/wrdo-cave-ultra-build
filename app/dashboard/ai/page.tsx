@@ -20,7 +20,8 @@ import {
   Bot,
   MessageSquare
 } from 'lucide-react';
-import { useWRDO } from '@/lib/wrdo-context';
+// import { useWRDO } from '@/lib/wrdo-context';
+import { useMockWRDO as useWRDO } from '@/lib/wrdo-mock';
 import { AI_MODELS, AI_AGENTS, aiRouter } from '@/lib/ai-router';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts';

@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/lib/theme'
 import { Toaster } from '@/components/ui/toaster'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { WRDOProvider } from '@/lib/wrdo-context'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -12,7 +13,11 @@ export const metadata: Metadata = {
   description: 'Advanced AI-powered operations platform with autonomous agents, intelligent automation, comprehensive business intelligence, and enterprise-grade security',
   keywords: 'AI, operations, automation, analytics, enterprise, security, autonomous agents, business intelligence',
   authors: [{ name: 'WRDO Cave Ultra Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

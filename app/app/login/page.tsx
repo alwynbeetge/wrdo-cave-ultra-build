@@ -25,24 +25,39 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // Simulate login process
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For demo purposes, accept any credentials
-      if (email && password) {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed. Please try again.');
+        return;
+      }
+
+      if (data.success) {
         localStorage.setItem('wrdo_user', JSON.stringify({
-          id: 'user_1',
-          name: 'Admin User',
-          email: email,
-          role: 'admin',
+          id: data.user.id,
+          name: data.user.name || 'User',
+          email: data.user.email,
+          role: 'admin', // Default role for demo
           loginTime: new Date().toISOString(),
         }));
         
         router.push('/dashboard');
       } else {
-        setError('Please enter both email and password');
+        setError('Login failed. Please try again.');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setError('Login failed. Please try again.');
     } finally {
       setIsLoading(false);

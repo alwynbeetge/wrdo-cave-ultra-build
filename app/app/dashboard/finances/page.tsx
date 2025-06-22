@@ -20,7 +20,8 @@ import {
   Calendar,
   PieChart
 } from 'lucide-react';
-import { useWRDO } from '@/lib/wrdo-context';
+// import { useWRDO } from '@/lib/wrdo-context';
+import { useMockWRDO as useWRDO } from '@/lib/wrdo-mock';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 

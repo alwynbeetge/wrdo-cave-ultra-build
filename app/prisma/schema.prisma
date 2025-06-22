@@ -1,7 +1,6 @@
 generator client {
     provider = "prisma-client-js"
     binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "/home/ubuntu/wrdo-cave-fixed/app/node_modules/.prisma/client"
 }
 
 datasource db {
@@ -87,8 +86,8 @@ model Notification {
 
 model ChatMessage {
   id        String   @id @default(cuid())
-  message   String   @db.Text
-  response  String?  @db.Text
+  message   String
+  response  String?
   metadata  Json?    // AI response metadata (model, tokens, cost, etc.)
   timestamp DateTime @default(now())
   userId    String

@@ -2,7 +2,7 @@
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
-import { prisma } from './db';
+import { SignJWT, jwtVerify } from 'jose';
 
 export interface User {
   id: string;
@@ -33,13 +33,50 @@ export function generateSessionToken(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-// Create session
-export async function createSession(userId: string): Promise<string> {
-  const sessionToken = generateSessionToken();
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'wrdo-cave-ultra-dev-secret-key-2025');
+
+// Create JWT token for middleware-compatible auth
+export async function createJWTToken(user: User): Promise<string> {
+  const token = await new SignJWT({
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    image: user.image,
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('30d')
+    .sign(JWT_SECRET);
+  
+  return token;
+}
+
+// Verify JWT token (works in Edge Runtime)
+export async function verifyJWTToken(token: string): Promise<User | null> {
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    
+    return {
+      id: payload.userId as string,
+      email: payload.email as string,
+      name: payload.name as string | null,
+      image: payload.image as string | null,
+      createdAt: new Date(), // We don't store these in JWT
+      updatedAt: new Date(),
+    };
+  } catch (error) {
+    console.error('JWT verification failed:', error);
+    return null;
+  }
+}
+
+// Create session with JWT token
+export async function createSession(user: User): Promise<string> {
+  const jwtToken = await createJWTToken(user);
   const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
-  // Set session cookie
-  cookies().set('session-token', sessionToken, {
+  // Set JWT session cookie
+  cookies().set('session-token', jwtToken, {
     expires,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -47,10 +84,12 @@ export async function createSession(userId: string): Promise<string> {
     path: '/',
   });
 
-  return sessionToken;
+  return jwtToken;
 }
 
-// Get current session
+
+
+// Get current session (Server Components compatible)
 export async function getCurrentSession(): Promise<Session | null> {
   try {
     const sessionToken = cookies().get('session-token')?.value;
@@ -59,26 +98,8 @@ export async function getCurrentSession(): Promise<Session | null> {
       return null;
     }
 
-    // For now, we'll decode the session from the token
-    // In production, you'd want to store sessions in database
-    const userId = await getUserIdFromToken(sessionToken);
+    const user = await verifyJWTToken(sessionToken);
     
-    if (!userId) {
-      return null;
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
     if (!user) {
       return null;
     }
@@ -93,112 +114,7 @@ export async function getCurrentSession(): Promise<Session | null> {
   }
 }
 
-// Database-based session storage
-export async function storeSession(token: string, userId: string): Promise<void> {
-  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  
-  // Store session in database
-  await prisma.session.create({
-    data: {
-      sessionToken: token,
-      userId,
-      expires,
-    },
-  });
-}
-
-export async function getUserIdFromToken(token: string): Promise<string | null> {
-  try {
-    const session = await prisma.session.findUnique({
-      where: { sessionToken: token },
-    });
-    
-    if (!session || session.expires < new Date()) {
-      // Clean up expired session
-      if (session) {
-        await prisma.session.delete({
-          where: { sessionToken: token },
-        });
-      }
-      return null;
-    }
-    
-    return session.userId;
-  } catch (error) {
-    console.error('Error getting user from token:', error);
-    return null;
-  }
-}
-
-// Destroy session
-export async function destroySession(): Promise<void> {
-  const sessionToken = cookies().get('session-token')?.value;
-  
-  if (sessionToken) {
-    // Delete session from database
-    try {
-      await prisma.session.delete({
-        where: { sessionToken },
-      });
-    } catch (error) {
-      // Session might not exist, continue
-    }
-  }
-  
-  cookies().set('session-token', '', {
-    expires: new Date(0),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-  });
-}
-
-// Get user by email
-export async function getUserByEmail(email: string) {
-  return prisma.user.findUnique({
-    where: { email },
-  });
-}
-
-// Create user
-export async function createUser(email: string, password: string, name?: string) {
-  const hashedPassword = await hashPassword(password);
-  
-  return prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      name,
-    },
-  });
-}
-
-// Authenticate user
-export async function authenticateUser(email: string, password: string): Promise<User | null> {
-  const user = await getUserByEmail(email);
-  
-  if (!user || !user.password) {
-    return null;
-  }
-  
-  const isValidPassword = await verifyPassword(password, user.password);
-  
-  if (!isValidPassword) {
-    return null;
-  }
-  
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    image: user.image,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
-}
-
-// Middleware helper for protected routes
+// Middleware helper for protected routes (Edge Runtime compatible)
 export async function requireAuth(request: NextRequest): Promise<User | null> {
   const sessionToken = request.cookies.get('session-token')?.value;
   
@@ -206,23 +122,5 @@ export async function requireAuth(request: NextRequest): Promise<User | null> {
     return null;
   }
   
-  const userId = await getUserIdFromToken(sessionToken);
-  
-  if (!userId) {
-    return null;
-  }
-  
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      image: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-  
-  return user;
+  return await verifyJWTToken(sessionToken);
 }

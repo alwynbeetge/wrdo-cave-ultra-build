@@ -23,7 +23,8 @@ import {
   TrendingUp,
   Bell
 } from 'lucide-react';
-import { useWRDO } from '@/lib/wrdo-context';
+// import { useWRDO } from '@/lib/wrdo-context';
+import { useMockWRDO as useWRDO } from '@/lib/wrdo-mock';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
 
@@ -152,7 +153,7 @@ export default function TasksCalendarPage() {
       userPreferences: {},
       conversationHistory: []
     });
-  }, [dashboardStats, selectedDate, filterStatus, filterPriority, actions, state.currentUser?.id]);
+  }, [dashboardStats, selectedDate, filterStatus, filterPriority, state.currentUser?.id]);
 
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

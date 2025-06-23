@@ -136,7 +136,7 @@ export default function CompetitorDashboard() {
       userPreferences: {},
       conversationHistory: []
     });
-  }, [competitorStats, filterLocation, filterThreat, actions, state.currentUser?.id]);
+  }, [competitorStats, filterLocation, filterThreat, state.currentUser?.id]);
 
   const filteredCompetitors = competitors.filter(competitor => {
     const matchesSearch = competitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

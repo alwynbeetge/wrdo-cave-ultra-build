@@ -3,7 +3,7 @@ builder = "nixpacks"
 
 [build.nixpacksConfig]
 installCmd = "pnpm install"
-buildCmd = "pnpm run build"
+buildCmd = "pnpm prisma generate && pnpm run build"
 
 [deploy]
 startCmd = "pnpm start"

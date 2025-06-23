@@ -114,6 +114,16 @@ export async function getCurrentSession(): Promise<Session | null> {
   }
 }
 
+export async function destroySession(): Promise<void> {
+  cookies().set('session-token', '', {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+}
+
 // Middleware helper for protected routes (Edge Runtime compatible)
 export async function requireAuth(request: NextRequest): Promise<User | null> {
   const sessionToken = request.cookies.get('session-token')?.value;

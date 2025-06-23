@@ -1,5 +1,4 @@
 
-import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 import { SignJWT, jwtVerify } from 'jose';
@@ -18,14 +17,83 @@ export interface Session {
   expires: Date;
 }
 
-// Hash password
+// Hash password using Web Crypto API (Edge Runtime compatible)
 export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 12);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  
+  const key = await crypto.subtle.importKey(
+    'raw',
+    data,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+  
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    key,
+    256
+  );
+  
+  const hashArray = new Uint8Array(salt.length + derivedBits.byteLength);
+  hashArray.set(salt);
+  hashArray.set(new Uint8Array(derivedBits), salt.length);
+  
+  return btoa(String.fromCharCode.apply(null, Array.from(hashArray)));
 }
 
-// Verify password
+// Verify password using Web Crypto API (Edge Runtime compatible)
 export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  return bcrypt.compare(password, hashedPassword);
+  try {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    
+    const hashArray = new Uint8Array(Array.from(atob(hashedPassword)).map(c => c.charCodeAt(0)));
+    const salt = hashArray.slice(0, 16);
+    const storedHash = hashArray.slice(16);
+    
+    const key = await crypto.subtle.importKey(
+      'raw',
+      data,
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits']
+    );
+    
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: 100000,
+        hash: 'SHA-256'
+      },
+      key,
+      256
+    );
+    
+    const derivedArray = new Uint8Array(derivedBits);
+    if (derivedArray.length !== storedHash.length) {
+      return false;
+    }
+    
+    for (let i = 0; i < derivedArray.length; i++) {
+      if (derivedArray[i] !== storedHash[i]) {
+        return false;
+      }
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Password verification error:', error);
+    return false;
+  }
 }
 
 // Generate session token

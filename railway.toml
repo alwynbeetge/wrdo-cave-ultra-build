@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+
+[build.nixpacksConfig]
+installCmd = "pnpm install"
+buildCmd = "pnpm run build"
+
+[deploy]
+startCmd = "pnpm start"

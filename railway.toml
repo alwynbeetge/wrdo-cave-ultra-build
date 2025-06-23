@@ -6,4 +6,4 @@ installCmd = "pnpm install"
 buildCmd = "pnpm run build"
 
 [deploy]
-startCmd = "pnpm start"
+startCmd = "node .next/standalone/server.js"

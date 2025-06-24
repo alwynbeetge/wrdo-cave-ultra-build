@@ -1,4 +1,4 @@
-// File: /home/ubuntu/wrdo-cave-fixed/app/app/api/auth/register/route.ts
+// File: /home/ubuntu/wrdo-cave-ultra-build/app/api/auth/register/route.ts
 import * as entry from '../../../../../../app/api/auth/register/route.js'
 import type { NextRequest } from 'next/server.js'
 

@@ -1,4 +1,4 @@
-// File: /home/ubuntu/wrdo-cave-fixed/app/app/api/chat/route.ts
+// File: /home/ubuntu/wrdo-cave-ultra-build/app/api/chat/route.ts
 import * as entry from '../../../../../app/api/chat/route.js'
 import type { NextRequest } from 'next/server.js'
 

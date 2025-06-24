@@ -1,4 +1,4 @@
-// File: /home/ubuntu/wrdo-cave-fixed/app/app/dashboard/finances/page.tsx
+// File: /home/ubuntu/wrdo-cave-ultra-build/app/dashboard/finances/page.tsx
 import * as entry from '../../../../../app/dashboard/finances/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

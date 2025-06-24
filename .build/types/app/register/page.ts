@@ -1,4 +1,4 @@
-// File: /home/ubuntu/wrdo-cave-fixed/app/app/register/page.tsx
+// File: /home/ubuntu/wrdo-cave-ultra-build/app/register/page.tsx
 import * as entry from '../../../../app/register/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

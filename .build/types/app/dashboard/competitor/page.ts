@@ -1,4 +1,4 @@
-// File: /home/ubuntu/wrdo-cave-fixed/app/app/dashboard/competitor/page.tsx
+// File: /home/ubuntu/wrdo-cave-ultra-build/app/dashboard/competitor/page.tsx
 import * as entry from '../../../../../app/dashboard/competitor/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

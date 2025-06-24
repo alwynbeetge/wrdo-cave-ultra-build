@@ -157,7 +157,7 @@ export default function LoginPage() {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-slate-400">
-                  Demo credentials: Any email and password will work
+
                 </p>
               </div>
             </CardContent>

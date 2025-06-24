@@ -1,1 +1,0 @@
-{"version":1,"functions":{"/api/auth/logout":{},"/api/auth/register":{},"/api/auth/login":{},"/api/email/setup":{},"/api/queue":{},"/api/email/sync":{},"/api/socketio":{},"/api/seed":{},"/api/chat":{},"/api/wrdo/brain":{},"/dashboard/admin":{},"/chat":{},"/integrations":{},"/api/chat/agent-request":{}}}

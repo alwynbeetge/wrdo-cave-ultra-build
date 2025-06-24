@@ -113,3 +113,7 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
+.build/
+node_modules/
+*.log
+.env.local

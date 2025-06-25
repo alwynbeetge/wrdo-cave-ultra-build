@@ -117,3 +117,7 @@ jspm_packages/
 node_modules/
 *.log
 .env.local
+
+# Build cache
+.build/cache/
+.next/cache/

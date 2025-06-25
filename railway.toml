@@ -2,8 +2,8 @@
 builder = "nixpacks"
 
 [build.nixpacksConfig]
-installCmd = "pnpm install"
-buildCmd = "pnpm run build"
+installCmd = "npm install --legacy-peer-deps"
+buildCmd = "npm run build"
 
 [deploy]
 startCmd = "node .next/standalone/server.js"

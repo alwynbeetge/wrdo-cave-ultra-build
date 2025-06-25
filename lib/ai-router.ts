@@ -125,13 +125,12 @@ export interface AgentApprovalRequest {
 }
 
 export class AIRouter {
-  private baseUrl = 'https://apps.abacus.ai';
-  private apiKey: string;
+  private openaiApiKey: string;
   
   constructor() {
-    this.apiKey = process.env.ABACUSAI_API_KEY || 'mock-abacus-api-key-for-development';
-    if (!this.apiKey) {
-      throw new Error('ABACUSAI_API_KEY environment variable is required');
+    this.openaiApiKey = process.env.OPENAI_API_KEY || 'sk-test-key-for-development';
+    if (!this.openaiApiKey) {
+      console.warn('OPENAI_API_KEY environment variable not set, using mock responses');
     }
   }
 
@@ -250,18 +249,39 @@ export class AIRouter {
       ...(options.userId && { user: options.userId }),
     };
 
-    const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
+    // Use OpenAI API directly for OpenAI models, mock for others
+    let response;
+    if (model.provider === 'openai') {
+      response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.openaiApiKey}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+    } else {
+      // Mock response for non-OpenAI providers
+      response = {
+        ok: true,
+        json: async () => ({
+          choices: [{
+            message: {
+              content: `Mock response from ${model.name}: I understand your request and would provide a helpful response here. This is a development mock response.`
+            }
+          }],
+          usage: {
+            total_tokens: Math.floor(Math.random() * 100) + 50
+          }
+        })
+      };
+    }
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API request failed: ${response.status} ${response.statusText} - ${errorText}`);
+      const errorText = response.text ? await response.text() : 'Unknown error';
+      const status = response.status || 500;
+      const statusText = response.statusText || 'Internal Server Error';
+      throw new Error(`API request failed: ${status} ${statusText} - ${errorText}`);
     }
 
     const data = await response.json();
